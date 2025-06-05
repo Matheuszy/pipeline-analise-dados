@@ -1,0 +1,49 @@
+# Análise de Cancelamento de Serviço Bancário - Insights e Recomendações
+
+## Data da Análise: 05 de Junho de 2025
+
+### Contexto:
+Este documento detalha as principais descobertas da análise da base de dados de cancelamentos de serviços bancários. O objetivo é identificar os fatores de maior impacto no churn de clientes e propor soluções acionáveis para mitigá-lo.
+
+---
+
+### **Padrão 1: Impacto das Interações com o Call Center no Churn**
+
+* **Observação Baseada em Dados:**
+    * A análise do histograma da coluna `ligacoes_callcenter` (`color="cancelou"`) revelou uma correlação clara: clientes que realizaram **mais de 3 ligações** ao call center apresentaram uma taxa de cancelamento significativamente superior à média.
+    * A filtragem do dataset para clientes com `<= 4` ligações ao call center (`tabela_ligacoes = tabela[tabela['ligacoes_callcenter'] <= 4]`) e a posterior reanálise da taxa de cancelamento confirmam que essa métrica é um forte preditor de churn. A partir de 4 ligações, a probabilidade de cancelamento dispara.
+
+* **Implicação:**
+    * Múltiplas interações com o call center indicam uma dificuldade do cliente em ter seu problema resolvido, gerando frustração e insatisfação progressiva. O serviço de atendimento, neste cenário, está contribuindo para o churn, ao invés de atuar como um retentor.
+
+* **Recomendação e Solução Proposta:**
+    1.  **Otimização da Resolução no Primeiro Contato (FCR):**
+        * **Ação:** Investir em treinamento intensivo para os agentes do call center, focando em habilidades de resolução de problemas, escuta ativa e empatia. O objetivo é aumentar a taxa de resolução na primeira chamada, minimizando a necessidade de múltiplos contatos.
+        * **Métrica de Sucesso:** Redução do número médio de ligações por problema e aumento da satisfação do cliente pós-atendimento.
+    2.  **Sistema de Monitoramento Proativo de Insatisfação:**
+        * **Ação:** Implementar um sistema que monitore o número de ligações de um cliente em um curto período. Ao atingir 3 ou mais ligações, um alerta deve ser disparado para um supervisor ou uma equipe de retenção, que fará um contato proativo com o cliente para entender a situação e oferecer uma solução personalizada.
+        * **Métrica de Sucesso:** Diminuição da taxa de cancelamento entre clientes que atingem o limiar de 3+ ligações.
+
+---
+
+### **Padrão 2: Suscetibilidade ao Churn em Planos Mensais**
+
+* **Observação Baseada em Dados:**
+    * A análise da distribuição da coluna `duracao_contrato` (`color="cancelou"`) demonstrou que clientes com contratos do tipo `'Monthly'` (mensais) possuem uma taxa de cancelamento desproporcionalmente alta em comparação com contratos anuais ou de longo prazo.
+    * Após a filtragem adicional do dataset (`tabela_nova = tabela_ligacoes[tabela_ligacoes['duracao_contrato'] != 'Monthly']`), a taxa de cancelamento no subgrupo de clientes não mensais é significativamente menor, solidificando a hipótese de que o plano mensal é um fator de risco.
+
+* **Implicação:**
+    * Planos mensais podem não gerar o mesmo nível de fidelidade ou "custo de troca" (switching cost) que planos de maior duração. Clientes mensais podem sentir menos compromisso e serem mais suscetíveis a ofertas de concorrentes ou a pequenas insatisfações.
+
+* **Recomendação e Solução Proposta:**
+    1.  **Campanhas de Migração para Planos de Longo Prazo:**
+        * **Ação:** Desenvolver e promover campanhas de marketing direcionadas a clientes com planos mensais, oferecendo incentivos substanciais para a migração para contratos anuais ou bianuais (e.g., descontos progressivos, meses grátis, acesso a funcionalidades premium exclusivas para planos de longo prazo).
+        * **Métrica de Sucesso:** Aumento da proporção de clientes em planos anuais e redução do churn geral.
+    2.  **Otimização do Valor Percebido no Plano Mensal:**
+        * **Ação:** Para clientes que persistem no plano mensal, explorar formas de aumentar o valor percebido do serviço. Isso pode incluir a comunicação mais efetiva dos benefícios existentes, pequenos "mimos" digitais, acesso antecipado a novas funcionalidades ou a criação de um programa de fidelidade específico para clientes mensais de longa data.
+        * **Métrica de Sucesso:** Estabilização ou leve redução da taxa de cancelamento para o segmento de clientes mensais, e aumento da retenção de clientes mensais antigos.
+
+---
+
+### **Considerações Finais:**
+As duas causas identificadas (ligações ao call center e duração do contrato) são as que demonstraram o maior impacto no cancelamento. A implementação das soluções propostas deve ser monitorada através de KPIs relevantes (taxa de churn, FCR, migração de planos, etc.) para avaliar a eficácia das ações e realizar ajustes conforme necessário. Uma análise contínua é crucial para adaptar as estratégias de retenção.
